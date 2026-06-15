@@ -10,7 +10,7 @@ export class SessionRechargeService implements ISessionRecharge
     sessionRechargeData: ISessionRechargeData,
   ){
     // Set the data for session recharge
-    this.sessionRechargeData = sessionRechargeData;
+    this.sessionRechargeData = { ...sessionRechargeData };
 
     // Add Id if not existing (to Fill but not nescary at all)
     if ( !this.sessionRechargeData.id )  

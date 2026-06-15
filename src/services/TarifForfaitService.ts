@@ -5,7 +5,7 @@ export class TarifForfaitService implements ITarif {
     private readonly tarifData: ITarifData;
 
     public constructor(tarifData: ITarifData) { 
-        this.tarifData = tarifData;
+        this.tarifData = { ...tarifData };
     }
 
     public calculerCout( s: ISessionRechargeData): number {

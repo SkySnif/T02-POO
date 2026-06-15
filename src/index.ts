@@ -93,15 +93,8 @@ console.log( `----- Tarif heure creuse avec heure de chargement`);
 
 // 5 - Tarif au heure creuse
 // **********************************************************************************************************************************
-const sessionRechargeAuKwhHeureCreuse = new SessionRechargeService(sessionRechargeHeureCreuseData);
-
-// /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-// La modification de l'objet data après initialisation de l'objet est lié en reference.
-// Une modification à posteriori de l'objet data est changé dans l'objet déjà instancié meme si la data est en readonly
 sessionRechargeHeureCreuseData.tarif = tarifAukwHeureCreuse;
-// /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-// **********************************************************************************************************************************
-
+const sessionRechargeAuKwhHeureCreuse = new SessionRechargeService(sessionRechargeHeureCreuseData);
 const coutAuKwhHeureCreuse = sessionRechargeAuKwhHeureCreuse.count();
 console.log( `le cout en heure creuse au kwh est ${coutAuKwhHeureCreuse}`);
 
