@@ -19,7 +19,6 @@ const sessionRechargeHeureCreuseData: ISessionRechargeData= {
     heureChargement: new Date("2024-06-15T02:00:00")
 }
 
-
 const tarifAukwhBasicData: ITarifData = 
 {
     BaseMontant: 0.25
@@ -62,40 +61,55 @@ const tarifForfaitHeureCreuse: ITarif = new TarifForfaitService(tarifForfaitHeur
 console.log( `----- Tarif basic`);
 
 // 1 - Tarif au Kwh sans heure creuse
-const sessionRechargeauKwhBasic = new SessionRechargeService(sessionRechargeBasicData, tarifAukwhBasic);
-const coutAuKwh = sessionRechargeauKwhBasic.count();
+sessionRechargeBasicData.tarif = tarifAukwhBasic;
+const sessionRechargeAuKwhBasic = new SessionRechargeService(sessionRechargeBasicData);
+const coutAuKwh = sessionRechargeAuKwhBasic.count();
 console.log( `le cout basic au kwh est ${coutAuKwh}`);
 
 // 2 - Tarif au forfait sans heure creuse
-const sessionRechargeForfaitBasic = new SessionRechargeService(sessionRechargeBasicData, tarifForfaitBasic);
+sessionRechargeBasicData.tarif = tarifForfaitBasic;
+const sessionRechargeForfaitBasic = new SessionRechargeService(sessionRechargeBasicData);
 const coutForfait = sessionRechargeForfaitBasic.count();
 console.log( `le cout basic au forfait est de ${coutForfait}`);
 
 console.log( "");
-console.log( `----- Tarif sans heure creuse mais sans heure de chargement`);
+console.log( `----- Tarif heure creuse mais sans heure de chargement`);
 
 // 3 - Tarif sans heure de chargement
-const sessionRechargeauKwhBasicHeureCreuse = new SessionRechargeService(sessionRechargeBasicData, tarifAukwHeureCreuse);
-const coutAuKwhBasicHeureCreuse = sessionRechargeauKwhBasicHeureCreuse.count();
+sessionRechargeBasicData.tarif = tarifAukwHeureCreuse;
+const sessionRechargeAuKwhBasicHeureCreuse = new SessionRechargeService(sessionRechargeBasicData);
+const coutAuKwhBasicHeureCreuse = sessionRechargeAuKwhBasicHeureCreuse.count();
 console.log( `le cout basic au kwh est ${coutAuKwhBasicHeureCreuse}`);
 
-// 4 - Tarif au forfait sans heure creuse
-const sessionRechargeForfaitBasicHeureCreuse = new SessionRechargeService(sessionRechargeBasicData, tarifForfaitHeureCreuse);
+// 4 - Tarif au forfait sans heure de chargement
+sessionRechargeBasicData.tarif = tarifForfaitHeureCreuse;
+const sessionRechargeForfaitBasicHeureCreuse = new SessionRechargeService(sessionRechargeBasicData);
 const coutForfaitBasicHeureCreuse = sessionRechargeForfaitBasicHeureCreuse.count();
 console.log( `le cout basic au forfait est de ${coutForfaitBasicHeureCreuse}`);
 
+
 console.log( "");
-console.log( `----- Tarif  heure creuse avec heure de chargement`);
+console.log( `----- Tarif heure creuse avec heure de chargement`);
 
-// 3 - Tarif au heure creuse
-const sessionRechargeauKwhHeureCreuse = new SessionRechargeService(sessionRechargeHeureCreuseData, tarifAukwHeureCreuse);
-const coutAuKwhHeureCreuse = sessionRechargeauKwhHeureCreuse.count();
-console.log( `le cout basic au kwh est ${coutAuKwhHeureCreuse}`);
+// 5 - Tarif au heure creuse
+// **********************************************************************************************************************************
+const sessionRechargeAuKwhHeureCreuse = new SessionRechargeService(sessionRechargeHeureCreuseData);
 
-// 4 - Tarif au forfait sans heure creuse
-const sessionRechargeForfaitHeureCreuse = new SessionRechargeService(sessionRechargeHeureCreuseData, tarifForfaitHeureCreuse);
+// /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+// La modification de l'objet data après initialisation de l'objet est lié en reference.
+// Une modification à posteriori de l'objet data est changé dans l'objet déjà instancié meme si la data est en readonly
+sessionRechargeHeureCreuseData.tarif = tarifAukwHeureCreuse;
+// /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+// **********************************************************************************************************************************
+
+const coutAuKwhHeureCreuse = sessionRechargeAuKwhHeureCreuse.count();
+console.log( `le cout en heure creuse au kwh est ${coutAuKwhHeureCreuse}`);
+
+// 6 - Tarif au forfait sans heure creuse
+sessionRechargeHeureCreuseData.tarif = tarifForfaitHeureCreuse;
+const sessionRechargeForfaitHeureCreuse = new SessionRechargeService(sessionRechargeHeureCreuseData);
 const coutForfaitHeureCreuse = sessionRechargeForfaitHeureCreuse.count();
-console.log( `le cout basic au forfait est de ${coutForfaitHeureCreuse}`);
+console.log( `le cout en heure creuse au forfait est de ${coutForfaitHeureCreuse} - Pas de calcul heure creuse implémenté`);
 
 console.log( "");
 console.log( "----- Stop recharge borne");

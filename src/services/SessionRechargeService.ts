@@ -5,11 +5,9 @@ import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISe
 export class SessionRechargeService implements ISessionRecharge
 {
   private readonly sessionRechargeData: ISessionRechargeData;
-  private readonly tarif: ITarif;
 
   public constructor(
     sessionRechargeData: ISessionRechargeData,
-    tarif: ITarif
   ){
     // Set the data for session recharge
     this.sessionRechargeData = sessionRechargeData;
@@ -17,8 +15,6 @@ export class SessionRechargeService implements ISessionRecharge
     // Add Id if not existing (to Fill but not nescary at all)
     if ( !this.sessionRechargeData.id )  
       this.sessionRechargeData.id = this.getId()
-
-    this.tarif = tarif;
   }
 
 /**
@@ -28,7 +24,11 @@ export class SessionRechargeService implements ISessionRecharge
  * @returns {number} 
  */
   public count(): number {
-    return this.tarif.calculerCout(this.sessionRechargeData);
+    if ( this.sessionRechargeData.tarif === undefined ) {
+      console.log(`[SESSION RECHARGE] Aucun tarif défini pour la session de recharge ${this.sessionRechargeData.id}, le coût est de 0.`);
+      throw new Error(`Aucun tarif défini pour la session de recharge ${this.sessionRechargeData.id}`);
+    }
+    return this.sessionRechargeData.tarif.calculerCout(this.sessionRechargeData);
   } 
 
   private getId(): string {
