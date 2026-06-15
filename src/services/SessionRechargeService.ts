@@ -4,29 +4,21 @@ import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISe
 
 export class SessionRechargeService implements ISessionRecharge
 {
-
-private readonly id: string;
-private readonly energieKwh: number;
-private readonly tarif: ITarif;
-
-private readonly sessionRechargeData: ISessionRechargeData;
+  private readonly sessionRechargeData: ISessionRechargeData;
+  private readonly tarif: ITarif;
 
   public constructor(
-    energieKwh: number,
-    tarif: ITarif,
-    id: string = this.getId() // default value getId
+    sessionRechargeData: ISessionRechargeData,
+    tarif: ITarif
   ){
-    // basic data
-    this.id=id;
-    this.energieKwh=energieKwh;
-    this.tarif=tarif;
-
     // Set the data for session recharge
-    this.sessionRechargeData = {
-        id: this.id,
-        energieKwh: this.energieKwh,
-        tarif: this.tarif
-    };
+    this.sessionRechargeData = sessionRechargeData;
+
+    // Add Id if not existing (to Fill but not nescary at all)
+    if ( !this.sessionRechargeData.id )  
+      this.sessionRechargeData.id = this.getId()
+
+    this.tarif = tarif;
   }
 
 /**

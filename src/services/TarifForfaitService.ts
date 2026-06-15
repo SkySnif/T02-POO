@@ -1,15 +1,18 @@
-import { ITarif } from "../interfaces/entities/Tarif/ITarif";
+import { ITarif, ITarifData } from "../interfaces/entities/Tarif/index";
 import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISessionRechargeData";
 
 export class TarifForfaitService implements ITarif {
-    private readonly montant;
+    private readonly tarifData: ITarifData;
 
-    public constructor(montant: number) { 
-        this.montant = montant;
+    public constructor(tarifData: ITarifData) { 
+        this.tarifData = tarifData;
     }
 
     public calculerCout( s: ISessionRechargeData): number {
-        console.log(`Calcul du coût de la session de recharge au forfait la session : ${s.id} - montant : ${this.montant} - energie consommée : ${s.energieKwh}`);
-        return this.montant;
+        
+        const montant = this.tarifData.BaseMontant;
+        
+        console.log(`[TARIF FORFAIT]Calcul du coût de la session de recharge au forfait la session : ${s.id} - montant : ${montant} - energie consommée : ${s.energieKwh}`);
+        return montant;
     }
 }

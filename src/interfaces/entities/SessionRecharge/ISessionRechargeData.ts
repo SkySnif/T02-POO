@@ -2,7 +2,8 @@ import { ITarif } from "../Tarif/ITarif";
 
 export interface ISessionRechargeData 
 {
-    id: string;
+    id?: string;
     energieKwh: number;
-    tarif: ITarif;
+    tarif?: ITarif;
+    heureChargement?: Date;
 }
