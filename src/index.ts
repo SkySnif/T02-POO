@@ -10,11 +10,13 @@ console.log( "");
 
 // Chargement sans heure creuse
 const sessionRechargeBasicData: ISessionRechargeData= {
+    id: "1",
     energieKwh: 30,
 }
 
 // Chargement pendant heure creuse
 const sessionRechargeHeureCreuseData: ISessionRechargeData= {
+    id: "2",
     energieKwh: 30,
     heureChargement: new Date("2024-06-15T02:00:00")
 }
