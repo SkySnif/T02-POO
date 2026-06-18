@@ -89,6 +89,7 @@ console.log( `le cout basic au forfait est de ${coutForfaitBasicHeureCreuse}`);
 
 
 console.log( "");
+console.log( "Hello");
 console.log( `----- Tarif heure creuse avec heure de chargement`);
 
 // 5 - Tarif au heure creuse
