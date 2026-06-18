@@ -1,0 +1,9 @@
+@startuml BorneFlash
+
+interface Tarif << interface >>
+{
+    +calculerCout(s: SessionRecharge) : number
+}
+
+Commit 1 
+@enduml
