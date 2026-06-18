@@ -6,5 +6,4 @@ interface Tarif << interface >>
 }
 
 Commit 1 
-
 @enduml
