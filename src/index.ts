@@ -1,9 +1,9 @@
-import { ITarif, ITarifData } from "./interfaces/entities/Tarif/index";
-import { SessionRechargeService } from "./services/SessionRechargeService";
+import type { ITarif, ITarifData } from "./modules/Tarif/entities/index";
+import type { ISessionRechargeData } from "./modules/SessionRecharge/interfaces/ISessionRechargeData";
 
-import { ISessionRechargeData } from "./interfaces/entities/SessionRecharge/ISessionRechargeData";
-import { TarifAukwhService } from "./services/TarifAukwhService";
-import { TarifForfaitService } from "./services/TarifForfaitService";
+import { SessionRechargeService } from "./modules/Tarif/services/SessionRechargeService";
+import { TarifAukwhService } from "./modules/Tarif/services/TarifAukwhService";
+import { TarifForfaitService } from "./modules/Tarif/services/TarifForfaitService";
 
 console.log( "----- Start recharge borne");
 console.log( "");

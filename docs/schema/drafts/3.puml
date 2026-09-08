@@ -1,0 +1,164 @@
+@startuml BorneFlash
+set separator :'
+
+' === Package: Entities ===
+package "Entities" {
+    abstract class BaseEntity <<abstract>> {
+        #id: string
+        #createdAt?: Date
+        #updatedAt?: Date
+        +getId() : string
+        +getCreatedAt() : Date | undefined
+        +getUpdatedAt() : Date | undefined
+        +{abstract} toData() : T
+    }
+    
+    class Tarif {
+        -nom: string
+        -description?: string
+        -estActif: boolean
+        -strategy: ITarifStrategy
+        +calculerCout(sessionData: ISessionRechargeData) : number
+        +toData() : ITarifData
+    }
+}
+
+' === Package: Interfaces ===
+package "Interfaces" {
+    interface IBaseEntityData {
+        +id: string
+        +createdAt?: Date
+        +updatedAt?: Date
+    }
+    
+    interface IEntity {
+        +getId() : string
+        +getCreatedAt() : Date | undefined
+        +getUpdatedAt() : Date | undefined
+        +toData() : T
+    }
+    
+    interface ITarifData {
+        +nom: string
+        +description?: string
+        +estActif: boolean
+        +strategy: ITarifStrategy
+    }
+    
+    interface ITarif {
+        +getNom() : string
+        +getDescription() : string | undefined
+        +estActif() : boolean
+        +getStrategy() : ITarifStrategy
+        +calculerCout(sessionData: ISessionRechargeData) : number
+    }
+    
+    interface IHeureCreuseData {
+        +baseMontant: number
+        +heureDebut: number
+        +heureFin: number
+        +jours?: number[]
+    }
+    
+    interface ISessionRechargeData {
+        +id: string
+        +energieKwh: number
+        +heureChargement?: Date
+        +tarif?: ITarif
+    }
+    
+    interface ISessionRecharge {
+        +count() : number
+        +setTarif(tarif: ITarif) : void
+    }
+}
+
+' === Package: Strategies ===
+package "Strategies" {
+    interface ITarifStrategy {
+        +calculerCout(sessionData: ISessionRechargeData) : number
+        +getType() : TarifStrategyType
+    }
+    
+    class TarifKwhStrategy {
+        -prixParKwh: number
+        +calculerCout(sessionData: ISessionRechargeData) : number
+    }
+    
+    class TarifForfaitStrategy {
+        -montant: number
+        +calculerCout(sessionData: ISessionRechargeData) : number
+    }
+    
+    class TarifHeureCreuseStrategy {
+        -prixPlein: number
+        -prixCreux: number
+        -heuresCreuses: IHeureCreuseData
+        +calculerCout(sessionData: ISessionRechargeData) : number
+        -isHeureCreuse(heureChargement: Date) : boolean
+    }
+}
+
+' === Package: Factory ===
+package "Factory" {
+    class TarifFactory {
+        +{static} creerTarifKwh() : ITarif
+        +{static} creerTarifForfait() : ITarif
+        +{static} creerTarifHeureCreuse() : ITarif
+    }
+}
+
+' === Package: Services ===
+package "Services" {
+    class SessionRechargeService {
+        -sessionData: ISessionRechargeData
+        +count() : number
+        +setTarif(tarif: ITarif) : void
+    }
+}
+
+' === Package: Enums ===
+package "Enums" {
+    enum TarifStrategyType {
+        KWH
+        FORFAIT
+        HEURE_CREUSE
+    }
+}
+
+' === Relations ===
+IBaseEntityData <|-- ITarifData
+IBaseEntityData <|-- ISessionRechargeData
+
+IEntity <|.. BaseEntity
+IEntity <|.. Tarif
+IEntity <|.. SessionRechargeService
+
+BaseEntity <|-- Tarif
+
+ITarif <|.. Tarif
+ISessionRecharge <|.. SessionRechargeService
+
+ITarifStrategy <|.. TarifKwhStrategy
+ITarifStrategy <|.. TarifForfaitStrategy
+ITarifStrategy <|.. TarifHeureCreuseStrategy
+
+Tarif --> ITarifStrategy
+Tarif --> ITarifData : "toData()"
+
+TarifHeureCreuseStrategy --> IHeureCreuseData
+
+SessionRechargeService --> ITarif
+SessionRechargeService --> ISessionRechargeData
+
+ITarif ..> ISessionRechargeData : "use"
+ITarifStrategy ..> ISessionRechargeData : "use"
+
+TarifFactory ..> ITarif : "create"
+TarifFactory ..> Tarif : "create"
+
+TarifStrategyType --> TarifKwhStrategy
+TarifStrategyType --> TarifForfaitStrategy
+TarifStrategyType --> TarifHeureCreuseStrategy
+
+@enduml

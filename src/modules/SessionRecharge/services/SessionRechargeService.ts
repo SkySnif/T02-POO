@@ -1,6 +1,5 @@
-import { ITarif } from "../interfaces/entities/Tarif/ITarif";
-import { ISessionRecharge } from "../interfaces/entities/SessionRecharge/ISessionRecharge";
-import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISessionRechargeData";
+import type { ISessionRecharge } from "../entities/SessionRecharge/ISessionRecharge";
+import type { ISessionRechargeData } from "../entities/SessionRecharge/ISessionRechargeData";
 
 export class SessionRechargeService implements ISessionRecharge
 {

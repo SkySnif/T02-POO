@@ -1,0 +1,145 @@
+@startuml BorneFlash
+set separator ::
+
+' === Interfaces ===
+interface IBaseEntityData <<interface>> {
+    +id: string
+    +createdAt?: Date
+    +updatedAt?: Date
+}
+
+interface IEntity <<interface>> {
+    +getId() : string
+    +getCreatedAt() : Date | undefined
+    +getUpdatedAt() : Date | undefined
+    +toData() : T
+}
+
+interface ITarifData <<interface>> {
+    +baseMontant: number
+    +heureCreuse?: IHeureCreuseData
+    +type: string
+    +nom: string
+    +description?: string
+    +estActif: boolean
+}
+
+interface IHeureCreuseData <<interface>> {
+    +baseMontant: number
+    +heureDebut: number
+    +heureFin: number
+    +jours?: number[]
+}
+
+interface ITarif <<interface>> {
+    +getBaseMontant() : number
+    +getHeureCreuse() : IHeureCreuseData | undefined
+    +getType() : string
+    +getNom() : string
+    +getDescription() : string | undefined
+    +estActif() : boolean
+    +calculerCout(sessionData: ISessionRechargeData) : number
+    +isHeureCreuse(heureChargement: Date) : boolean
+}
+
+interface ISessionRechargeData <<interface>> {
+    +id: string
+    +energieKwh: number
+    +heureChargement?: Date
+    +tarif?: ITarif
+}
+
+interface ISessionRecharge <<interface>> {
+    +count() : number
+}
+
+' === Classes ===
+abstract class BaseEntity <<abstract>> {
+    #id: string
+    #createdAt?: Date
+    #updatedAt?: Date
+    +{abstract} getId() : string
+    +{abstract} getCreatedAt() : Date | undefined
+    +{abstract} getUpdatedAt() : Date | undefined
+    +{abstract} toData() : T
+}
+
+class Tarif {
+    -baseMontant: number
+    -heureCreuse?: IHeureCreuseData
+    -type: string
+    -nom: string
+    -description?: string
+    -estActif: boolean
+    +{static} TYPE_KWH: string
+    +{static} TYPE_FORFAIT: string
+    +{static} TYPE_HEURE_CREUSE: string
+    +calculerCout(sessionData: ISessionRechargeData) : number
+    -getMontantApplicable(sessionData: ISessionRechargeData) : number
+    +isHeureCreuse(heureChargement: Date) : boolean
+    +toData() : ITarifData
+}
+
+class TarifFactory {
+    +{static} creerTarifKwh(data?: Partial<ITarifData>) : ITarif
+    +{static} creerTarifForfait(data?: Partial<ITarifData>) : ITarif
+    +{static} creerTarifHeureCreuse(data?: Partial<ITarifData>) : ITarif
+}
+
+class SessionRechargeService {
+    -sessionData: ISessionRechargeData
+    +count() : number
+    +setTarif(tarif: ITarif) : void
+    -generateId() : string
+}
+
+' === Relations ===
+IBaseEntityData <|-- ITarifData : "<<extend>>"
+IHeureCreuseData <-- ITarifData : "0..1"
+
+IEntity <|.. ITarif : "<<implement>>"
+IEntity <|.. BaseEntity : "<<implement>>"
+
+BaseEntity <|-- Tarif : "<<extend>>"
+
+ITarif <|.. Tarif : "<<implement>>"
+ISessionRecharge <|.. SessionRechargeService : "<<implement>>"
+
+Tarif ..> ISessionRechargeData : "use (paramètre)"
+Tarif --> IHeureCreuseData : "-heureCreuse"
+
+SessionRechargeService --> ITarif : "-tarif"
+SessionRechargeService --> ISessionRechargeData : "-sessionData"
+
+TarifFactory ..> ITarif : "create"
+TarifFactory ..> Tarif : "create"
+
+' === Notes ===
+note top of BaseEntity
+  Classe abstraite qui contient
+  les champs communs à toutes
+  les entités du domaine
+end note
+
+note right of Tarif
+  Entité du domaine qui encapsule
+  la logique métier du tarif
+  et la gestion des heures creuses
+end note
+
+note bottom of TarifFactory
+  Factory pour créer des tarifs
+  avec des configurations par défaut
+end note
+
+note left of SessionRechargeService
+  Service qui gère la session
+  et délègue le calcul au tarif
+end note
+
+note right of ISessionRechargeData
+  DTO (Data Transfer Object)
+  Contient les données de la session
+end note
+
+@enduml

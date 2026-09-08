@@ -1,5 +1,5 @@
-import { ITarif, ITarifData } from "../interfaces/entities/Tarif/index";
-import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISessionRechargeData";
+import type { ITarif, ITarifData } from "../entities/index";
+import type { ISessionRechargeData } from "../../SessionRecharge/interfaces/ISessionRechargeData";
 
 export class TarifForfaitService implements ITarif {
     private readonly tarifData: ITarifData;

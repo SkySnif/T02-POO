@@ -1,0 +1,92 @@
+@startuml BorneFlash
+set separator ::
+
+
+package Base {
+    interface IBaseEntityData
+    {
+        id : int
+        createdAt : string
+        updatedAt : string
+    }
+
+    interface IBaseEntity<T extends IBaseEntityData>  <<interface>> {
+        getId() : string
+        getCreatedAt() : date
+        getUpdatedAt() : date
+        toData() : T
+    }
+
+    abstract BaseEntity<T extends IBaseEntity>  {
+        {constructor} BaseEntity(data: T)
+        -id : int
+        #createdAt? : string
+        #updatedAt? : string
+        #getId() : Object[]
+        +getCreatedAt() : string
+        +getUpdatedAt() : date
+        +{abstract}toData() : string
+    }
+}
+
+package Tarif { 
+    package Types { 
+        interface ITarif <<interface>>{
+            +calculerCout(s: SessionRecharge) : number
+        }
+
+        interface ITarifData <<interface>> {
+            +BaseMontant: number
+            +HeureCreuse?: IHeureCreuse
+        }
+
+        interface IHeureCreuseData
+        {
+            -BaseMontant : number
+            #HeureDebut : number
+            #HeureFin : number
+        }
+
+
+    }
+
+    class TarifAuKwh
+    {
+        -prixParKwh : number
+        +calculerCout(s : SessionRecharge) : number
+    }
+
+    class TarifForfaitService
+    {
+        -montant : number
+        +calculerCout(s : SessionRecharge) : number
+    }
+    
+enum TarifStrategyType {
+    KWH
+    FORFAIT
+}
+
+}
+
+package Session{
+    class SessionRecharge
+    {
+        -id : string
+        -energieKwh : string
+        -tarif : ITarif
+        +count() : number
+        
+    }
+}
+
+
+TarifAuKwh .left.|> ITarif : "<<extend>>"
+TarifForfaitService .left.|> ITarif : "<<extend>>"
+SessionRecharge "1" -left-> ITarif : "<<use>>"
+IHeureCreuseData "0" -down-> "1" ITarifData : "<<use>>"
+ITarifData .down.|> IBaseEntityData : "<<extend>>"
+BaseEntity .down.|> IBaseEntityData : "<<type constraint>>"
+BaseEntity .down.|> IBaseEntity : "<<implement>>"
+
+@enduml  

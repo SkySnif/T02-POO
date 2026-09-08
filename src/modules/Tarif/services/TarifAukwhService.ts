@@ -1,5 +1,5 @@
-import { ITarif, ITarifData } from "../interfaces/entities/Tarif/index";
-import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISessionRechargeData";
+import type { ITarif, ITarifData } from "../entities/index";
+import type { ISessionRechargeData } from "../../SessionRecharge/interfaces/ISessionRechargeData";
 
 export class TarifAukwhService implements ITarif {
     private readonly tarifData: ITarifData;
@@ -14,6 +14,7 @@ export class TarifAukwhService implements ITarif {
         console.log(`[TARIF KWH] Calcul du coût de la session de recharge au kwh la session : ${s.id} - cout du kwh : ${prixParKwk} - energie consommée : ${s.energieKwh}`);
         return s.energieKwh * prixParKwk;
     }
+
 
     private getMontant(s: ISessionRechargeData) : number
     {

@@ -1,5 +1,5 @@
-import { ISessionRepository } from "../interfaces/repositories/ISessionRepository";
-import { ISessionRechargeData } from "../interfaces/entities/SessionRecharge/ISessionRechargeData";
+import type { ISessionRepository } from "../../SessionRecharge/interfaces/ISessionRepository";
+import type { ISessionRechargeData } from "../../SessionRecharge/interfaces/ISessionRechargeData";
 
 export class MockSessionRechargeRepository implements ISessionRepository {
   private readonly sessionRechargeData: ISessionRechargeData;

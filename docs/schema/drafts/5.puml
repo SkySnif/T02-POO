@@ -1,0 +1,112 @@
+@startuml
+!define ENTITY class
+!define INTERFACE interface
+!define ABSTRACT abstract
+!define ENUM enum
+
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FEFEFE
+skinparam class {
+    BackgroundColor #EEF2F7
+    BorderColor #2C3E50
+    FontColor #2C3E50
+}
+skinparam interface {
+    BackgroundColor #E8F0FE
+    BorderColor #1A73E8
+    FontColor #1A73E8
+}
+skinparam enum {
+    BackgroundColor #F0F0F0
+    BorderColor #666666
+}
+
+INTERFACE IBaseEntityData <<interface>> {
+    + id: string
+    + createdAt?: Date
+    + updatedAt?: Date
+}
+
+ABSTRACT BaseEntity<T extends IBaseEntityData> {
+    # id: string
+    # createdAt?: Date
+    # updatedAt?: Date
+    ..
+    + {abstract} toData(): T
+    + getId(): string
+    + getCreatedAt(): Date
+    + getUpdatedAt(): Date
+    # {constructor} BaseEntity(data: T)
+}
+
+INTERFACE IBaseEntity<T extends IBaseEntityData> <<interface>> {
+    + getId(): string
+    + getCreatedAt(): Date
+    + getUpdatedAt(): Date
+    + toData(): T
+}
+
+INTERFACE ITarifData <<interface>> {
+    + id: string
+    + nom: string
+    + description?: string
+    + estActif: boolean
+    + strategy: ITarifStrategy
+    + createdAt?: Date
+    + updatedAt?: Date
+}
+
+INTERFACE ITarifStrategy <<interface>> {
+    + calculerCout(sessionData: ISessionRechargeData): number
+}
+
+INTERFACE ISessionRechargeData <<interface>> {
+    + [Contenu dépendant du contexte]
+}
+
+ENUM TarifType {
+    + [Valeurs possibles]
+}
+
+ENTITY Tarif {
+    - nom: string
+    - description?: string
+    - estActif: boolean
+    - strategy: ITarifStrategy
+    ..
+    + {constructor} Tarif(data: ITarifData)
+    + calculerCout(sessionData: ISessionRechargeData): number
+    + getNom(): string
+    + getDescription(): string
+    + estActif(): boolean
+    + getStrategy(): ITarifStrategy
+    + toData(): ITarifData
+}
+
+' Relations
+BaseEntity <|-- Tarif : extends
+IBaseEntity <|.. Tarif : implements
+IBaseEntity <|.. BaseEntity : implements
+IBaseEntityData <|.. ITarifData : extends
+IBaseEntityData <|.. BaseEntity : type constraint
+ITarifData <|.. Tarif : type constraint
+Tarif o--> ITarifStrategy : uses
+Tarif ..> ISessionRechargeData : uses in method
+Tarif ..> TarifType : uses
+
+note right of BaseEntity
+  <b>Clarification du paramètre générique</b>
+  T extends IBaseEntityData signifie que
+  T doit être un sous-type de IBaseEntityData
+  ce qui garantit que les données contiennent
+  au minimum id, createdAt et updatedAt
+end note
+
+note bottom of Tarif
+  <b>Implémentation concrète</b>
+  Tarif étend BaseEntity en spécifiant
+  le type générique T = ITarifData
+  ce qui rend toData() typé correctement
+end note
+
+@enduml

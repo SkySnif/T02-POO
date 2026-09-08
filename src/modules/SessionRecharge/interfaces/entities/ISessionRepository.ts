@@ -1,4 +1,4 @@
-import { ISessionRechargeData } from "../entities/SessionRecharge/ISessionRechargeData";
+import type { ISessionRechargeData } from "./ISessionRechargeData";
 
 export interface ISessionRechargeDataListResult {
   sessionRecharges: ISessionRepository[];

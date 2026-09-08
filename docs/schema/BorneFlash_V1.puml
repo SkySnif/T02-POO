@@ -1,0 +1,33 @@
+@startuml BorneFlash
+set separator ::
+
+interface Tarif::ITarif <<interface>>{
+    +calculerCout(s: SessionRecharge) : number
+}
+
+class Tarif::TarifAuKwh
+{
+    -prixParKwh : number
+    +calculerCout(s : SessionRecharge) : number
+}
+
+class Tarif::TarifForfaitService
+{
+    -montant : number
+    +calculerCout(s : SessionRecharge) : number
+}
+
+class SessionRecharge
+{
+    -id : string
+    -energieKwh : string
+    -tarif : ITarif
+    +count() : number
+    
+}
+
+ITarif <|.down. TarifAuKwh : "<<extend>>"
+ITarif <|.down. TarifForfaitService : "<<extend>>"
+ITarif "1" <-left- SessionRecharge : "<<use>>"
+
+@enduml 
